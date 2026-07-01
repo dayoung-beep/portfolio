@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXAI</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #07071a;
+      --purple: #7c3aed;
+      --purple-light: #a78bfa;
+      --blue: #3b82f6;
+      --text: #f0f0ff;
+      --text-muted: #8b8baa;
+      --border: rgba(255,255,255,0.08);
+      --sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 3rem;
+      background: rgba(7,7,26,0.7);
+      backdrop-filter: blur(12px);
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .nav-logo {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-cta {
+      font-size: 13px;
+      padding: 0.5rem 1.25rem;
+      border: 0.5px solid var(--purple-light);
+      border-radius: 999px;
+      color: var(--purple-light);
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .nav-cta:hover {
+      background: var(--purple);
+      color: #fff;
+      border-color: var(--purple);
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .glow-left {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      left: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(ellipse, rgba(124,58,237,0.35) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .glow-right {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      right: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(ellipse, rgba(59,130,246,0.3) 0%, transparent 70%);
+      border-radius: 50%;
+      filter: blur(40px);
+    }
+
+    .glow-center {
+      position: absolute;
+      width: 400px;
+      height: 200px;
+      left: 50%;
+      top: 55%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(ellipse, rgba(167,139,250,0.2) 0%, transparent 70%);
+      filter: blur(30px);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--purple-light);
+      border: 0.5px solid rgba(167,139,250,0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 999px;
+      margin-bottom: 2rem;
+      letter-spacing: 0.08em;
+      background: rgba(124,58,237,0.1);
+      position: relative;
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--purple-light);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 72px);
+      font-weight: 700;
+      line-height: 1.15;
+      margin-bottom: 1.5rem;
+      position: relative;
+      max-width: 800px;
+    }
+
+    .hero h1 .grad {
+      background: linear-gradient(135deg, #c4b5fd, #818cf8, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      position: relative;
+    }
+
+    .btn-primary {
+      font-size: 14px;
+      padding: 0.75rem 2rem;
+      background: linear-gradient(135deg, var(--purple), var(--blue));
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+    .btn-secondary {
+      font-size: 14px;
+      padding: 0.75rem 2rem;
+      background: transparent;
+      color: var(--text-muted);
+      border: 0.5px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    /* SECTION COMMON */
+    section {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 12px;
+      letter-spacing: 0.15em;
+      color: var(--purple-light);
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+    }
+
+    .section-title {
+      font-size: clamp(26px, 3vw, 40px);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 1rem;
+    }
+
+    .section-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 440px;
+      line-height: 1.8;
+    }
+
+    /* SERVICE */
+    .service-wrap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+
+    .service-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: border-color 0.3s, background 0.3s;
+    }
+
+    .service-card:hover {
+      border-color: rgba(167,139,250,0.3);
+      background: rgba(124,58,237,0.07);
+    }
+
+    .service-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(59,130,246,0.3));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 20px;
+    }
+
+    .service-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+
+    .service-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* STATS */
+    .stats-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+      border-top: 0.5px solid var(--border);
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: clamp(36px, 4vw, 56px);
+      font-weight: 700;
+      background: linear-gradient(135deg, #c4b5fd, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* NEWS */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      margin-top: 3rem;
+    }
+
+    .news-card {
+      background: rgba(255,255,255,0.03);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      transition: border-color 0.3s;
+    }
+
+    .news-card:hover { border-color: rgba(167,139,250,0.3); }
+
+    .news-tag {
+      font-size: 11px;
+      color: var(--purple-light);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .news-card h4 {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+    }
+
+    .news-date {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* CTA */
+    .cta-section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 6rem 2rem;
+      text-align: center;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(59,130,246,0.1));
+      border: 0.5px solid rgba(167,139,250,0.2);
+      border-radius: 24px;
+      padding: 5rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 500px;
+      height: 300px;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.2) 0%, transparent 70%);
+      filter: blur(30px);
+      pointer-events: none;
+    }
+
+    .cta-box h2 {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .cta-box p {
+      font-size: 16px;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      position: relative;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 0.5px solid var(--border);
+      padding: 2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .footer-logo {
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      background: linear-gradient(90deg, #a78bfa, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .service-wrap { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .news-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <span class="nav-logo">NEXAI</span>
+    <ul class="nav-links">
+      <li><a href="#">About</a></li>
+      <li><a href="#">Service</a></li>
+      <li><a href="#">Research</a></li>
+      <li><a href="#">News</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <a href="#" class="nav-cta">문의하기</a>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-glow">
+      <div class="glow-left"></div>
+      <div class="glow-right"></div>
+      <div class="glow-center"></div>
+    </div>
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      AI-Powered Innovation
+    </div>
+    <h1>인공지능으로<br><span class="grad">비즈니스의 미래</span>를<br>설계합니다</h1>
+    <p class="hero-sub">NEXAI는 최신 AI 기술로 기업의 데이터를 인사이트로 전환하고, 더 빠른 의사결정을 지원합니다.</p>
+    <div class="hero-buttons">
+      <a href="#" class="btn-primary">서비스 알아보기</a>
+      <a href="#" class="btn-secondary">데모 요청</a>
+    </div>
+  </div>
+
+  <!-- SERVICE -->
+  <section>
+    <div class="section-label">Service</div>
+    <h2 class="section-title">AI가 만드는<br>새로운 가능성</h2>
+    <p class="section-sub">산업별 맞춤 AI 솔루션으로 업무 효율과 비즈니스 성과를 동시에 높입니다.</p>
+    <div class="service-wrap">
+      <div class="service-card">
+        <div class="service-icon">🧠</div>
+        <h3>데이터 분석 AI</h3>
+        <p>대규모 데이터를 실시간으로 분석하고 핵심 인사이트를 자동 추출합니다.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🤖</div>
+        <h3>AI 자동화 솔루션</h3>
+        <p>반복적인 업무 프로세스를 AI로 자동화하여 운영 비용을 절감합니다.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">💡</div>
+        <h3>AI 컨설팅</h3>
+        <p>기업 환경에 최적화된 AI 도입 전략과 로드맵을 함께 설계합니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats-section">
+    <div class="stats-grid">
+      <div>
+        <div class="stat-number">98%</div>
+        <div class="stat-label">고객 만족도</div>
+      </div>
+      <div>
+        <div class="stat-number">340+</div>
+        <div class="stat-label">도입 기업</div>
+      </div>
+      <div>
+        <div class="stat-number">12억</div>
+        <div class="stat-label">처리 데이터 건수</div>
+      </div>
+      <div>
+        <div class="stat-number">47</div>
+        <div class="stat-label">협력 국가</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEWS -->
+  <section>
+    <div class="section-label">News</div>
+    <h2 class="section-title">최신 소식</h2>
+    <div class="news-grid">
+      <div class="news-card">
+        <div class="news-tag">Press Release</div>
+        <h4>NEXAI, 글로벌 AI 어워드 2025 최우수 혁신상 수상</h4>
+        <div class="news-date">2025.11.20</div>
+      </div>
+      <div class="news-card">
+        <div class="news-tag">Research</div>
+        <h4>대규모 언어 모델 기반 산업 자동화 연구 결과 발표</h4>
+        <div class="news-date">2025.10.08</div>
+      </div>
+      <div class="news-card">
+        <div class="news-tag">Partnership</div>
+        <h4>국내 주요 제조사 5곳과 AI 공급망 최적화 MOU 체결</h4>
+        <div class="news-date">2025.09.15</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-section">
+    <div class="cta-box">
+      <h2>지금 NEXAI와<br>함께 시작하세요</h2>
+      <p>AI 도입이 처음이어도 괜찮습니다. 전문가가 처음부터 함께합니다.</p>
+      <a href="#" class="btn-primary">무료 상담 신청</a>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-logo">NEXAI</span>
+    <span class="footer-copy">© 2025 NEXAI. All rights reserved.</span>
+  </footer>
+
+</body>
+</html>
